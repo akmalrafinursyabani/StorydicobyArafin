@@ -13,6 +13,7 @@ import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 private const val MAXIMAL_SIZE = 1_000_000 // 1MB Max
 private const val FILENAME_FORMAT = "yyyyMMdd_HHmmss"
@@ -43,7 +44,7 @@ fun File.reduceFileImage(): File {
     val rotatedBitmap = rotateImageIfRequired(this.path, bitmap)
     var compressQuality = 100
     var streamLength: Int
-    
+
     do {
         val bmpStream = ByteArrayOutputStream()
         rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, compressQuality, bmpStream)
@@ -56,6 +57,18 @@ fun File.reduceFileImage(): File {
         rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, compressQuality.coerceAtLeast(10), it)
     }
     return this
+}
+
+fun String.formatDate(): String {
+    return try {
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
+        inputFormat.timeZone = TimeZone.getTimeZone("UTC")
+        val date = inputFormat.parse(this)
+        val outputFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
+        if (date != null) outputFormat.format(date) else this
+    } catch (e: Exception) {
+        this
+    }
 }
 
 private fun rotateImageIfRequired(path: String, bitmap: Bitmap): Bitmap {

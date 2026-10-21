@@ -38,6 +38,7 @@
     <string name="error_empty_field">Field cannot be empty</string>
     <string name="error_empty_image">Please select an image first</string>
     <string name="error_empty_description">Please write a story description</string>
+    <string name="error_permission_denied">Permission to access camera was denied</string>
 
     <!-- Messages & States -->
     <string name="msg_register_success">Account registered successfully! Please login.</string>
