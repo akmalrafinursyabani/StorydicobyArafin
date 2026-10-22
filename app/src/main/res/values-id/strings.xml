@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">Storydico</string>
+
+    <!-- Navigation & Titles -->
+    <string name="title_login">Selamat Datang</string>
+    <string name="subtitle_login">Masuk untuk berbagi cerita di komunitas Dicoding</string>
+    <string name="title_register">Buat Akun</string>
+    <string name="subtitle_register">Bergabunglah dengan jaringan berbagi cerita sekarang</string>
+    <string name="title_stories">Daftar Cerita</string>
+    <string name="title_add_story">Tambah Cerita Baru</string>
+    <string name="title_detail_story">Detail Cerita</string>
+    <string name="title_logout">Konfirmasi Keluar</string>
+
+    <!-- Inputs & Buttons -->
+    <string name="label_name">Nama Lengkap</string>
+    <string name="label_email">Alamat Email</string>
+    <string name="label_password">Kata Sandi</string>
+    <string name="label_description">Deskripsi Cerita</string>
+    <string name="hint_name">John Doe</string>
+    <string name="hint_email">nama@contoh.com</string>
+    <string name="hint_password">Minimal 8 karakter</string>
+    <string name="hint_description">Tuliskan cerita Anda&#8230;</string>
+
+    <string name="btn_login">Masuk</string>
+    <string name="btn_register">Daftar</string>
+    <string name="btn_camera">Kamera</string>
+    <string name="btn_gallery">Galeri</string>
+    <string name="btn_upload">Unggah Cerita</string>
+    <string name="btn_logout">Keluar</string>
+    <string name="btn_cancel">Batal</string>
+    <string name="btn_yes">Ya</string>
+
+    <string name="prompt_no_account">Belum punya akun? </string>
+    <string name="prompt_register_link">Daftar di sini</string>
+    <string name="prompt_have_account">Sudah punya akun? </string>
+    <string name="prompt_login_link">Masuk</string>
+
+    <!-- Validation Errors -->
+    <string name="error_invalid_email">Format email tidak valid</string>
+    <string name="error_password_min_8">Password harus minimal 8 karakter</string>
+    <string name="error_empty_field">Kolom tidak boleh kosong</string>
+    <string name="error_empty_image">Pilih gambar terlebih dahulu</string>
+    <string name="error_empty_description">Tuliskan deskripsi cerita</string>
+    <string name="error_permission_denied">Izin untuk mengakses kamera ditolak</string>
+
+    <!-- Messages & States -->
+    <string name="msg_register_success">Akun berhasil dibuat! Silakan masuk.</string>
+    <string name="msg_upload_success">Cerita berhasil diunggah!</string>
+    <string name="msg_no_stories">Belum ada cerita yang tersedia.</string>
+    <string name="msg_loading">Memuat&#8230;</string>
+    <string name="msg_error_occurred">Terjadi kesalahan: %1$s</string>
+    <string name="msg_logout_confirm">Apakah Anda yakin ingin keluar?</string>
+</resources>

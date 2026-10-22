@@ -9,6 +9,7 @@
     <string name="title_stories">Story List</string>
     <string name="title_add_story">Add New Story</string>
     <string name="title_detail_story">Story Detail</string>
+    <string name="title_logout">Logout Confirmation</string>
 
     <!-- Inputs & Buttons -->
     <string name="label_name">Full Name</string>
@@ -26,6 +27,8 @@
     <string name="btn_gallery">Gallery</string>
     <string name="btn_upload">Upload Story</string>
     <string name="btn_logout">Logout</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_yes">Yes</string>
 
     <string name="prompt_no_account">Don\'t have an account? </string>
     <string name="prompt_register_link">Register here</string>
@@ -46,4 +49,5 @@
     <string name="msg_no_stories">No stories available yet.</string>
     <string name="msg_loading">Loading&#8230;</string>
     <string name="msg_error_occurred">An error occurred: %1$s</string>
+    <string name="msg_logout_confirm">Are you sure you want to log out?</string>
 </resources>

@@ -2,10 +2,12 @@ package com.example.storydicobyarafin
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.storydicobyarafin.databinding.ActivityMainBinding
 import com.example.storydicobyarafin.ui.ViewModelFactory
@@ -25,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == AddStoryActivity.RESULT_SUCCESS) {
+            Log.d(TAG, "New story added successfully. Refreshing story list.")
             viewModel.fetchStories()
         }
     }
@@ -33,6 +36,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setSupportActionBar(binding.toolbar)
+        setupToolbarMenu()
+
+        Log.d(TAG, "MainActivity created. Initializing views and observing session...")
 
         observeSession()
 
@@ -43,14 +51,30 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.fabAddStory.setOnClickListener {
+            Log.d(TAG, "FAB clicked. Launching AddStoryActivity.")
             val intent = Intent(this, AddStoryActivity::class.java)
             addStoryLauncher.launch(intent)
         }
     }
 
+    private fun setupToolbarMenu() {
+        binding.toolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_logout -> {
+                    Log.d(TAG, "Logout menu item clicked via Toolbar Listener. Showing confirmation dialog...")
+                    showLogoutConfirmationDialog()
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
     private fun observeSession() {
         viewModel.getSession().observe(this) { user ->
+            Log.d(TAG, "Session state updated: isLogin=${user.isLogin}, email=${user.email}")
             if (!user.isLogin || user.token.isEmpty()) {
+                Log.d(TAG, "User is not logged in or token is empty. Redirecting to LoginActivity...")
                 val intent = Intent(this, LoginActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 }
@@ -68,11 +92,31 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_logout -> {
-                viewModel.logout()
-                ViewModelFactory.clearInstance()
+                Log.d(TAG, "Logout menu item clicked via onOptionsItemSelected. Showing confirmation dialog...")
+                showLogoutConfirmationDialog()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showLogoutConfirmationDialog() {
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.title_logout))
+            .setMessage(getString(R.string.msg_logout_confirm))
+            .setPositiveButton(getString(R.string.btn_yes)) { _, _ ->
+                Log.d(TAG, "Logout confirmed by user. Clearing session data and resetting ViewModelFactory...")
+                viewModel.logout()
+                ViewModelFactory.clearInstance()
+            }
+            .setNegativeButton(getString(R.string.btn_cancel)) { dialog, _ ->
+                Log.d(TAG, "Logout cancelled by user.")
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    companion object {
+        private const val TAG = "LOGOUT_FLOW"
     }
 }

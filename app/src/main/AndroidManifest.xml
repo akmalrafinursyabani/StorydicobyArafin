@@ -44,6 +44,10 @@
             android:name=".ui.addstory.AddStoryActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ui.addstory.CameraActivity"
+            android:exported="false" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
