@@ -18,13 +18,20 @@ class LoginViewModel(private val repository: UserRepository) : ViewModel() {
     fun login(email: String, pass: String) {
         viewModelScope.launch {
             _loginResult.value = ResultState.Loading
-            _loginResult.value = repository.login(email, pass)
-        }
-    }
-
-    fun saveSession(userModel: UserModel) {
-        viewModelScope.launch {
-            repository.saveSession(userModel)
+            val result = repository.login(email, pass)
+            if (result is ResultState.Success) {
+                val loginResult = result.data.loginResult
+                if (loginResult != null) {
+                    repository.saveSession(
+                        UserModel(
+                            email = email,
+                            token = loginResult.token,
+                            isLogin = true
+                        )
+                    )
+                }
+            }
+            _loginResult.value = result
         }
     }
 }

@@ -10,12 +10,14 @@
     <string name="title_add_story">Tambah Cerita Baru</string>
     <string name="title_detail_story">Detail Cerita</string>
     <string name="title_logout">Konfirmasi Keluar</string>
+    <string name="title_maps">Peta Cerita</string>
 
     <!-- Inputs & Buttons -->
     <string name="label_name">Nama Lengkap</string>
     <string name="label_email">Alamat Email</string>
     <string name="label_password">Kata Sandi</string>
     <string name="label_description">Deskripsi Cerita</string>
+    <string name="label_include_location">Sertakan lokasi saya</string>
     <string name="hint_name">John Doe</string>
     <string name="hint_email">nama@contoh.com</string>
     <string name="hint_password">Minimal 8 karakter</string>
@@ -29,6 +31,8 @@
     <string name="btn_logout">Keluar</string>
     <string name="btn_cancel">Batal</string>
     <string name="btn_yes">Ya</string>
+    <string name="btn_retry">Coba Lagi</string>
+    <string name="btn_see_detail">Lihat Detail</string>
 
     <string name="prompt_no_account">Belum punya akun? </string>
     <string name="prompt_register_link">Daftar di sini</string>

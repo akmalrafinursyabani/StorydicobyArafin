@@ -10,12 +10,14 @@
     <string name="title_add_story">Add New Story</string>
     <string name="title_detail_story">Story Detail</string>
     <string name="title_logout">Logout Confirmation</string>
+    <string name="title_maps">Story Maps</string>
 
     <!-- Inputs & Buttons -->
     <string name="label_name">Full Name</string>
     <string name="label_email">Email Address</string>
     <string name="label_password">Password</string>
     <string name="label_description">Story Description</string>
+    <string name="label_include_location">Include my location</string>
     <string name="hint_name">John Doe</string>
     <string name="hint_email">name@example.com</string>
     <string name="hint_password">Minimum 8 characters</string>
@@ -29,6 +31,8 @@
     <string name="btn_logout">Logout</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_yes">Yes</string>
+    <string name="btn_retry">Retry</string>
+    <string name="btn_see_detail">See Detail</string>
 
     <string name="prompt_no_account">Don\'t have an account? </string>
     <string name="prompt_register_link">Register here</string>

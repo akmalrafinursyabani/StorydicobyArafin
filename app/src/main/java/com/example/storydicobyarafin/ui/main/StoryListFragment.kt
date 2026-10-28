@@ -6,18 +6,21 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.storydicobyarafin.R
 import com.example.storydicobyarafin.databinding.FragmentStoryListBinding
 import com.example.storydicobyarafin.ui.ViewModelFactory
+import com.example.storydicobyarafin.ui.adapter.LoadingStateAdapter
 import com.example.storydicobyarafin.ui.adapter.StoryAdapter
 import com.example.storydicobyarafin.ui.detail.DetailStoryActivity
-import com.example.storydicobyarafin.utils.ResultState
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class StoryListFragment : Fragment() {
 
@@ -42,18 +45,22 @@ class StoryListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.d(TAG, "StoryListFragment onViewCreated. Initializing RecyclerView and fetching stories...")
+        Log.d(TAG, "StoryListFragment onViewCreated. Initializing Paging 3 Adapter...")
 
         setupRecyclerView()
         setupSwipeRefresh()
-        observeViewModel()
+        observePagingData()
+    }
 
-        viewModel.fetchStories()
+    fun refreshList() {
+        if (::storyAdapter.isInitialized) {
+            storyAdapter.refresh()
+        }
     }
 
     private fun setupRecyclerView() {
         storyAdapter = StoryAdapter { storyItem, ivPhoto, tvName ->
-            Log.d(TAG, "Story item clicked: id=${storyItem.id}, name=${storyItem.name}. Launching DetailStoryActivity with Shared Element transition...")
+            Log.d(TAG, "Story item clicked: id=${storyItem.id}, name=${storyItem.name}. Opening DetailStoryActivity...")
             val intent = Intent(requireContext(), DetailStoryActivity::class.java).apply {
                 putExtra(DetailStoryActivity.EXTRA_NAME, storyItem.name)
                 putExtra(DetailStoryActivity.EXTRA_DESCRIPTION, storyItem.description)
@@ -70,48 +77,52 @@ class StoryListFragment : Fragment() {
             startActivity(intent, optionsCompat.toBundle())
         }
 
+        binding.btnRetry.setOnClickListener {
+            storyAdapter.retry()
+        }
+
         binding.rvStories.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = storyAdapter
+            adapter = storyAdapter.withLoadStateFooter(
+                footer = LoadingStateAdapter { storyAdapter.retry() }
+            )
         }
-    }
 
-    private fun setupSwipeRefresh() {
-        binding.swipeRefresh.setOnRefreshListener {
-            Log.d(TAG, "Swipe to refresh triggered. Refetching stories...")
-            viewModel.fetchStories()
-        }
-    }
+        viewLifecycleOwner.lifecycleScope.launch {
+            storyAdapter.loadStateFlow.collectLatest { loadStates ->
+                val isRefreshing = loadStates.refresh is LoadState.Loading
+                val isError = loadStates.refresh is LoadState.Error
+                val isEmpty = loadStates.refresh is LoadState.NotLoading && storyAdapter.itemCount == 0
 
-    private fun observeViewModel() {
-        viewModel.storiesResult.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is ResultState.Loading -> {
-                    Log.d(TAG, "Fetching story list loading...")
-                    if (!binding.swipeRefresh.isRefreshing) {
-                        showLoading(true)
-                    }
+                binding.progressBar.isVisible = isRefreshing && !binding.swipeRefresh.isRefreshing
+                binding.llError.isVisible = isError
+                binding.tvEmpty.isVisible = isEmpty
+                binding.rvStories.isVisible = !isError && !isEmpty
+
+                if (loadStates.refresh is LoadState.Error) {
+                    val errorState = loadStates.refresh as LoadState.Error
+                    binding.tvError.text = errorState.error.localizedMessage ?: "Failed to load stories"
+                    Log.e(TAG, "Paging LoadState Error: ${errorState.error.message}")
                 }
-                is ResultState.Success -> {
-                    showLoading(false)
+
+                if (loadStates.refresh !is LoadState.Loading) {
                     binding.swipeRefresh.isRefreshing = false
-                    val stories = result.data
-                    Log.d(TAG, "Successfully fetched ${stories.size} stories.")
-                    storyAdapter.submitList(stories)
-                    binding.tvEmpty.visibility = if (stories.isEmpty()) View.VISIBLE else View.GONE
-                }
-                is ResultState.Error -> {
-                    showLoading(false)
-                    binding.swipeRefresh.isRefreshing = false
-                    Log.e(TAG, "Failed to fetch stories: ${result.error}")
-                    Toast.makeText(requireContext(), getString(R.string.msg_error_occurred, result.error), Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
-    private fun showLoading(isLoading: Boolean) {
-        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+    private fun setupSwipeRefresh() {
+        binding.swipeRefresh.setOnRefreshListener {
+            Log.d(TAG, "Swipe to refresh triggered. Refreshing adapter...")
+            storyAdapter.refresh()
+        }
+    }
+
+    private fun observePagingData() {
+        viewModel.storiesPaging.observe(viewLifecycleOwner) { pagingData ->
+            storyAdapter.submitData(lifecycle, pagingData)
+        }
     }
 
     override fun onDestroyView() {

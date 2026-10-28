@@ -2,6 +2,7 @@ package com.example.storydicobyarafin.di
 
 import android.content.Context
 import com.example.storydicobyarafin.data.api.ApiConfig
+import com.example.storydicobyarafin.data.database.StoryDatabase
 import com.example.storydicobyarafin.data.pref.UserPreference
 import com.example.storydicobyarafin.data.pref.dataStore
 import com.example.storydicobyarafin.data.repository.StoryRepository
@@ -17,7 +18,8 @@ object Injection {
 
     fun provideStoryRepository(context: Context): StoryRepository {
         val pref = UserPreference.getInstance(context.dataStore)
+        val database = StoryDatabase.getInstance(context)
         val apiService = ApiConfig.getApiService(pref)
-        return StoryRepository.getInstance(apiService)
+        return StoryRepository.getInstance(database, apiService)
     }
 }

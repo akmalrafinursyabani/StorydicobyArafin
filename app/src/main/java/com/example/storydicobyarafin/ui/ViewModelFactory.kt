@@ -9,6 +9,7 @@ import com.example.storydicobyarafin.di.Injection
 import com.example.storydicobyarafin.ui.addstory.AddStoryViewModel
 import com.example.storydicobyarafin.ui.login.LoginViewModel
 import com.example.storydicobyarafin.ui.main.MainViewModel
+import com.example.storydicobyarafin.ui.maps.MapsViewModel
 import com.example.storydicobyarafin.ui.register.RegisterViewModel
 
 class ViewModelFactory private constructor(
@@ -30,6 +31,9 @@ class ViewModelFactory private constructor(
             }
             modelClass.isAssignableFrom(AddStoryViewModel::class.java) -> {
                 AddStoryViewModel(storyRepository) as T
+            }
+            modelClass.isAssignableFrom(MapsViewModel::class.java) -> {
+                MapsViewModel(storyRepository) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }

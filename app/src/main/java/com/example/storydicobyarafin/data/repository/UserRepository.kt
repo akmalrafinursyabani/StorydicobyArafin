@@ -10,24 +10,24 @@ import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import retrofit2.HttpException
 
-class UserRepository private constructor(
+open class UserRepository protected constructor(
     private val userPreference: UserPreference,
     private val apiService: ApiService
 ) {
 
-    suspend fun saveSession(user: UserModel) {
+    open suspend fun saveSession(user: UserModel) {
         userPreference.saveSession(user)
     }
 
-    fun getSession(): Flow<UserModel> {
+    open fun getSession(): Flow<UserModel> {
         return userPreference.getSession()
     }
 
-    suspend fun logout() {
+    open suspend fun logout() {
         userPreference.logout()
     }
 
-    suspend fun register(name: String, email: String, pass: String): ResultState<RegisterResponse> {
+    open suspend fun register(name: String, email: String, pass: String): ResultState<RegisterResponse> {
         return try {
             val response = apiService.register(name, email, pass)
             ResultState.Success(response)
@@ -40,7 +40,7 @@ class UserRepository private constructor(
         }
     }
 
-    suspend fun login(email: String, pass: String): ResultState<LoginResponse> {
+    open suspend fun login(email: String, pass: String): ResultState<LoginResponse> {
         return try {
             val response = apiService.login(email, pass)
             ResultState.Success(response)

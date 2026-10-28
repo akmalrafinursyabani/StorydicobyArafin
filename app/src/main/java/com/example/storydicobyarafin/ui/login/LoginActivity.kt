@@ -11,7 +11,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.storydicobyarafin.MainActivity
 import com.example.storydicobyarafin.R
-import com.example.storydicobyarafin.data.pref.UserModel
 import com.example.storydicobyarafin.databinding.ActivityLoginBinding
 import com.example.storydicobyarafin.ui.ViewModelFactory
 import com.example.storydicobyarafin.ui.register.RegisterActivity
@@ -75,14 +74,7 @@ class LoginActivity : AppCompatActivity() {
                     showLoading(false)
                     val loginResult = result.data.loginResult
                     if (loginResult != null) {
-                        Log.d(TAG, "Login successful for userId: ${loginResult.userId}, name: ${loginResult.name}")
-                        viewModel.saveSession(
-                            UserModel(
-                                email = binding.edLoginEmail.text.toString().trim(),
-                                token = loginResult.token,
-                                isLogin = true
-                            )
-                        )
+                        Log.d(TAG, "Login successful and session persisted. Navigating to MainActivity...")
                         ViewModelFactory.clearInstance()
                         val intent = Intent(this, MainActivity::class.java).apply {
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

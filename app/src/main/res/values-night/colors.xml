@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Dark Primary Theme Colors -->
+    <color name="navy_200">#90CAF9</color>
+    <color name="navy_500">#2196F3</color>
+    <color name="navy_700">#1976D2</color>
+
+    <color name="primary_color">#90CAF9</color>
+    <color name="primary_variant">#1976D2</color>
+    <color name="secondary_color">#80CBC4</color>
+
+    <!-- Surface & Backgrounds -->
+    <color name="background_color">#121212</color>
+    <color name="surface_color">#1E1E1E</color>
+    <color name="card_background">#1E1E1E</color>
+    <color name="stroke_color">#333333</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#EEEEEE</color>
+    <color name="text_secondary">#B0B0B0</color>
+    <color name="text_on_primary">#121212</color>
+
+    <!-- Status & Functional Colors -->
+    <color name="error_color">#EF5350</color>
+    <color name="gray_100">#212121</color>
+    <color name="gray_300">#424242</color>
+    <color name="gray_600">#B0B0B0</color>
+    <color name="gray_800">#E0E0E0</color>
+</resources>

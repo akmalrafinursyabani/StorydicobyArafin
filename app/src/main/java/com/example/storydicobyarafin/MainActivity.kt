@@ -3,8 +3,6 @@ package com.example.storydicobyarafin
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -15,6 +13,7 @@ import com.example.storydicobyarafin.ui.addstory.AddStoryActivity
 import com.example.storydicobyarafin.ui.login.LoginActivity
 import com.example.storydicobyarafin.ui.main.MainViewModel
 import com.example.storydicobyarafin.ui.main.StoryListFragment
+import com.example.storydicobyarafin.ui.maps.MapsActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,8 +26,11 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == AddStoryActivity.RESULT_SUCCESS) {
-            Log.d(TAG, "New story added successfully. Refreshing story list.")
-            viewModel.fetchStories()
+            Log.d(TAG, "New story added successfully. Refreshing story list fragment.")
+            val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+            if (fragment is StoryListFragment) {
+                fragment.refreshList()
+            }
         }
     }
 
@@ -37,14 +39,13 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
-        setupToolbarMenu()
-
         Log.d(TAG, "MainActivity created. Initializing views and observing session...")
 
+        setupToolbar()
         observeSession()
 
         if (savedInstanceState == null) {
+            Log.d(TAG, "Attaching StoryListFragment dynamically into fragment_container...")
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, StoryListFragment())
                 .commit()
@@ -57,11 +58,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupToolbarMenu() {
+    private fun setupToolbar() {
         binding.toolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
+                R.id.action_maps -> {
+                    Log.d(TAG, "Maps action item clicked. Launching MapsActivity...")
+                    startActivity(Intent(this, MapsActivity::class.java))
+                    true
+                }
                 R.id.action_logout -> {
-                    Log.d(TAG, "Logout menu item clicked via Toolbar Listener. Showing confirmation dialog...")
+                    Log.d(TAG, "Logout menu item clicked on Toolbar. Displaying confirmation dialog...")
                     showLogoutConfirmationDialog()
                     true
                 }
@@ -81,22 +87,6 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             }
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_logout -> {
-                Log.d(TAG, "Logout menu item clicked via onOptionsItemSelected. Showing confirmation dialog...")
-                showLogoutConfirmationDialog()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
         }
     }
 

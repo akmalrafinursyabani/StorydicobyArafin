@@ -1,22 +1,58 @@
 package com.example.storydicobyarafin.data.repository
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
+import androidx.paging.map
 import com.example.storydicobyarafin.data.api.ApiService
 import com.example.storydicobyarafin.data.api.response.FileUploadResponse
 import com.example.storydicobyarafin.data.api.response.ListStoryItem
 import com.example.storydicobyarafin.data.api.response.StoryResponse
+import com.example.storydicobyarafin.data.database.StoryDatabase
 import com.example.storydicobyarafin.utils.ResultState
 import com.google.gson.Gson
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.HttpException
 
-class StoryRepository private constructor(
+open class StoryRepository protected constructor(
+    private val database: StoryDatabase,
     private val apiService: ApiService
 ) {
 
-    suspend fun getStories(): ResultState<List<ListStoryItem>> {
+    @OptIn(ExperimentalPagingApi::class)
+    open fun getStoriesPaging(): LiveData<PagingData<ListStoryItem>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 7,
+                initialLoadSize = 7
+            ),
+            remoteMediator = StoryRemoteMediator(database, apiService),
+            pagingSourceFactory = {
+                database.storyDao().getAllStories()
+            }
+        ).liveData.map { pagingData ->
+            pagingData.map { entity ->
+                ListStoryItem(
+                    id = entity.id,
+                    name = entity.name,
+                    description = entity.description,
+                    photoUrl = entity.photoUrl,
+                    createdAt = entity.createdAt,
+                    lat = entity.lat,
+                    lon = entity.lon
+                )
+            }
+        }
+    }
+
+    open suspend fun getStoriesWithLocation(): ResultState<List<ListStoryItem>> {
         return try {
-            val response = apiService.getStories()
+            val response = apiService.getStories(location = 1)
             if (!response.error) {
                 ResultState.Success(response.listStory)
             } else {
@@ -31,12 +67,14 @@ class StoryRepository private constructor(
         }
     }
 
-    suspend fun uploadImage(
+    open suspend fun uploadImage(
         imageFile: MultipartBody.Part,
-        description: RequestBody
+        description: RequestBody,
+        lat: RequestBody? = null,
+        lon: RequestBody? = null
     ): ResultState<FileUploadResponse> {
         return try {
-            val response = apiService.uploadImage(imageFile, description)
+            val response = apiService.uploadImage(imageFile, description, lat, lon)
             if (!response.error) {
                 ResultState.Success(response)
             } else {
@@ -55,9 +93,9 @@ class StoryRepository private constructor(
         @Volatile
         private var instance: StoryRepository? = null
 
-        fun getInstance(apiService: ApiService): StoryRepository =
+        fun getInstance(database: StoryDatabase, apiService: ApiService): StoryRepository =
             instance ?: synchronized(this) {
-                instance ?: StoryRepository(apiService).also { instance = it }
+                instance ?: StoryRepository(database, apiService).also { instance = it }
             }
     }
 }

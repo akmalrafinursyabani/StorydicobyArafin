@@ -2,12 +2,29 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Primary Theme Colors -->
     <color name="navy_200">#90CAF9</color>
     <color name="navy_500">#2196F3</color>
     <color name="navy_700">#1976D2</color>
-    <color name="teal_200">#03DAC5</color>
-    <color name="teal_700">#018786</color>
-    <color name="red_500">#F44336</color>
+
+    <color name="primary_color">#1976D2</color>
+    <color name="primary_variant">#0D47A1</color>
+    <color name="secondary_color">#00897B</color>
+
+    <!-- Surface & Backgrounds -->
+    <color name="background_color">#FAFAFA</color>
+    <color name="surface_color">#FFFFFF</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="stroke_color">#E0E0E0</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_on_primary">#FFFFFF</color>
+
+    <!-- Status & Functional Colors -->
+    <color name="error_color">#D32F2F</color>
     <color name="gray_100">#F5F5F5</color>
     <color name="gray_300">#E0E0E0</color>
     <color name="gray_600">#757575</color>

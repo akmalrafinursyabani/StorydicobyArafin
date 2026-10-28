@@ -37,6 +37,10 @@ android {
     }
 }
 
+tasks.withType<Test> {
+    jvmArgs("-Dnet.bytebuddy.experimental=true")
+}
+
 dependencies {
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.fragment.ktx)
@@ -66,7 +70,24 @@ dependencies {
     // Swipe Refresh
     implementation(libs.androidx.swiperefreshlayout)
 
+    // Google Maps & Location
+    implementation(libs.play.services.maps)
+    implementation(libs.play.services.location)
+
+    // Paging 3
+    implementation(libs.androidx.paging.runtime.ktx)
+
+    // Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+
+    // Testing
     testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.arch.core.testing)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
 }
