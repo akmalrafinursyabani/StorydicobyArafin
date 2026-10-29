@@ -54,4 +54,5 @@
     <string name="msg_loading">Loading&#8230;</string>
     <string name="msg_error_occurred">An error occurred: %1$s</string>
     <string name="msg_logout_confirm">Are you sure you want to log out?</string>
+    <string name="msg_location_not_found">Lokasi story tidak ditemukan</string>
 </resources>

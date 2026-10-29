@@ -54,4 +54,5 @@
     <string name="msg_loading">Memuat&#8230;</string>
     <string name="msg_error_occurred">Terjadi kesalahan: %1$s</string>
     <string name="msg_logout_confirm">Apakah Anda yakin ingin keluar?</string>
+    <string name="msg_location_not_found">Lokasi story tidak ditemukan</string>
 </resources>

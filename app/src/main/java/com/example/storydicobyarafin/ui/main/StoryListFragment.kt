@@ -66,6 +66,8 @@ class StoryListFragment : Fragment() {
                 putExtra(DetailStoryActivity.EXTRA_DESCRIPTION, storyItem.description)
                 putExtra(DetailStoryActivity.EXTRA_PHOTO_URL, storyItem.photoUrl)
                 putExtra(DetailStoryActivity.EXTRA_CREATED_AT, storyItem.createdAt)
+                storyItem.lat?.let { putExtra(DetailStoryActivity.EXTRA_LAT, it) }
+                storyItem.lon?.let { putExtra(DetailStoryActivity.EXTRA_LON, it) }
             }
 
             val optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(

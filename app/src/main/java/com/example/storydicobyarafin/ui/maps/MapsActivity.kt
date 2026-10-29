@@ -1,6 +1,8 @@
 package com.example.storydicobyarafin.ui.maps
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -8,6 +10,8 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.storydicobyarafin.R
 import com.example.storydicobyarafin.data.api.response.ListStoryItem
 import com.example.storydicobyarafin.databinding.ActivityMapsBinding
@@ -33,6 +37,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private val boundsBuilder = LatLngBounds.Builder()
+    private val markerImageCache = HashMap<String, Bitmap>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,9 +71,31 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 windowBinding.tvInfoName.text = story.name
                 windowBinding.tvInfoDescription.text = story.description
 
-                Glide.with(applicationContext)
-                    .load(story.photoUrl)
-                    .into(windowBinding.ivInfoPhoto)
+                val cachedBitmap = markerImageCache[story.id]
+                if (cachedBitmap != null) {
+                    windowBinding.ivInfoPhoto.setImageBitmap(cachedBitmap)
+                } else {
+                    Glide.with(applicationContext)
+                        .asBitmap()
+                        .load(story.photoUrl)
+                        .into(object : CustomTarget<Bitmap>() {
+                            override fun onResourceReady(
+                                resource: Bitmap,
+                                transition: Transition<in Bitmap>?
+                            ) {
+                                markerImageCache[story.id] = resource
+                                if (marker.isInfoWindowShown) {
+                                    marker.showInfoWindow()
+                                }
+                            }
+
+                            override fun onLoadCleared(placeholder: Drawable?) {}
+
+                            override fun onLoadFailed(errorDrawable: Drawable?) {
+                                Log.e(TAG, "Failed to load image for marker story: ${story.id}")
+                            }
+                        })
+                }
 
                 return windowBinding.root
             }
@@ -87,6 +114,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     putExtra(DetailStoryActivity.EXTRA_DESCRIPTION, story.description)
                     putExtra(DetailStoryActivity.EXTRA_PHOTO_URL, story.photoUrl)
                     putExtra(DetailStoryActivity.EXTRA_CREATED_AT, story.createdAt)
+                    story.lat?.let { putExtra(DetailStoryActivity.EXTRA_LAT, it) }
+                    story.lon?.let { putExtra(DetailStoryActivity.EXTRA_LON, it) }
                 }
                 startActivity(intent)
             }
@@ -122,6 +151,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                                 marker?.tag = story
                                 boundsBuilder.include(latLng)
                                 hasLocation = true
+
+                                Glide.with(applicationContext)
+                                    .asBitmap()
+                                    .load(story.photoUrl)
+                                    .into(object : CustomTarget<Bitmap>() {
+                                        override fun onResourceReady(
+                                            resource: Bitmap,
+                                            transition: Transition<in Bitmap>?
+                                        ) {
+                                            markerImageCache[story.id] = resource
+                                        }
+
+                                        override fun onLoadCleared(placeholder: Drawable?) {}
+                                    })
                             }
                         }
 
